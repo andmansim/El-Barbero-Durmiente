@@ -52,3 +52,6 @@ class Cola:
         except:
             raise ValueError('La cola esta vacia')
     
+    def vacia(self):
+        return self.items == []
+    
