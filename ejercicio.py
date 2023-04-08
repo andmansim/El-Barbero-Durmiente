@@ -11,7 +11,7 @@ import time
 class Barbero:
     #estados del barbero: trabajando, dormido
     def __init__(self):
-        self.estado = None #No tiene estado hasta q llega un cliente
+        self.estado = False #No tiene estado hasta q llega un cliente
     
     def get(self): #getter
         return self.estado
@@ -70,12 +70,27 @@ while usuario == 'Si':
         if cola.vacia(): #añadimos un cliente
             cliente = Cliente(num)
             cliente.set_estado('Barbero')
-            cliente.set_posicion(0)
             cola.encolar(cliente)
+            barbero.setter(True)
             time.sleep(cliente.tiempo_espera)
             c = cola.desencolar()
             print(f'Se va el cliente {c.id}')
             v = cola.vacia()
             print(v)
         elif cola.count() == 1:
-            
+            cliente = Cliente(num)
+            cliente.set_estado('Silla 1')
+            cola.encolar(cliente)
+        elif cola.count() == 2:
+            cliente = Cliente(num)
+            cliente.set_estado('Silla 2')
+            cola.encolar(cliente)
+        elif cola.count() == 3:
+            cliente = Cliente(num)
+            cliente.set_estado('Silla 3')
+            cola.encolar(cliente)
+        else:
+            print('El cliente se fue porque no había hueco disponible')
+            num -= 1
+           
+           
