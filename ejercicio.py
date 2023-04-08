@@ -23,20 +23,20 @@ class Cliente:
     #estados del cliente: esperando en una silla, atendido o se va(no hay sitio para él)
     #posición si está en la barbería: silla 1, silla 2, silla 3 o barbero
     #si está siendo atendido, tiene que tener un tiempo (para que le corte el pelo o lo que sea)
-    def __init__(self, id):
+    def __init__(self, id, estado):
         self.id = id
-        self.estado = None #no tiene estado
-        self.lugar = None #donde está el cliente
-        self.tiempo_espera = random.randint(5, 20)
+        self.estado = estado #no tiene estado
+        self.tiempo_espera = random.randint(5, 25)
+        self.tiemoEsperado = 8 #Solo aumenta si ya está con el barbero
     def get_estado(self):
         return self.estado
-    def get_posicion(self):
-        return self.lugar
+    def get_id(self):
+        return self.id
     
     def set_estado(self, nuevo):
         self.estado = nuevo
-    def set_posicion(self, nuevo):
-        self.lugar = nuevo
+    def set_id(self, nuevo):
+        self.id = nuevo
     
 class Cola:
     def __init__(self):
@@ -72,11 +72,11 @@ while usuario == 'Si':
             cliente.set_estado('Barbero')
             cola.encolar(cliente)
             barbero.setter(True)
-            time.sleep(cliente.tiempo_espera)
+            '''time.sleep(cliente.tiempo_espera)
             c = cola.desencolar()
             print(f'Se va el cliente {c.id}')
             v = cola.vacia()
-            print(v)
+            print(v)'''
         elif cola.count() == 1:
             cliente = Cliente(num)
             cliente.set_estado('Silla 1')
@@ -90,7 +90,11 @@ while usuario == 'Si':
             cliente.set_estado('Silla 3')
             cola.encolar(cliente)
         else:
-            print('El cliente se fue porque no había hueco disponible')
+            print('El cliente se fue porque no había hueco disponible\n')
             num -= 1
-           
-           
+    print('Posiciones totales: Barbero, Silla 1, Silla 2, Silla 3\n')
+    print(f'Posiciones ocupadas : {cola} \n')
+    
+    if not cola.vacia():
+        
+        
