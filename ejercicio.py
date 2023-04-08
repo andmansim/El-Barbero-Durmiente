@@ -54,4 +54,15 @@ class Cola:
     
     def vacia(self):
         return self.items == []
+
+#Main
+
+barbero = Barbero()
+cola = Cola()
+num = 1
+cliente = Cliente(1)
+if cola.vacia: #añadimos un cliente
+    cliente.set_estado('Barbero')
+    cliente.set_posicion(0)
+    cola.encolar(cliente)
     
