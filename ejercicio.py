@@ -4,6 +4,9 @@ Llega un cliente y el barbero está ocupado, se sienta en la silla 1, si llega o
 estos esperan en las sillas. 3 sillas ocupadas y barbero también entonces cliente se va 
 
 '''
+
+import random 
+
 class Barbero:
     #estados del barbero: trabajando, dormido
     def __init__(self):
@@ -19,9 +22,11 @@ class Cliente:
     #estados del cliente: esperando en una silla, atendido o se va(no hay sitio para él)
     #posición si está en la barbería: silla 1, silla 2, silla 3 o barbero
     #si está siendo atendido, tiene que tener un tiempo (para que le corte el pelo o lo que sea)
-    def __init__(self):
+    def __init__(self, id):
+        self.id = id
         self.estado = None #no tiene estado
         self.lugar = None #donde está el cliente
+        self.tiempo_espera = random.randint(5, 20)
     def get_estado(self):
         return self.estado
     def get_posicion(self):
