@@ -46,7 +46,12 @@ class Cola:
     
     def encolar(self, x):
         self.items.append(x)
-    
+    def get(self):
+        lista = []
+        for i in self:
+            a = [i.get_id, i.get_estado]
+            lista.append(a)
+        return lista
     def desencolar(self):
         try:
             return self.items.pop(0)
@@ -71,7 +76,7 @@ i = 0
 usuario = input('Quieres empezar?  Si/No\t')
 while usuario == 'Si':
     
-    if i % 10 == 8:
+    if i % 10 == 0:
         usuario =  input('Llegó un nuevo cliente\nQuiéres continuar?  Si/No\t')
         num +=1
         if cola.vacia(): #añadimos un cliente
@@ -109,7 +114,7 @@ while usuario == 'Si':
                     i.set_estado(f'En Silla {k} ')
                 k +=1
             print('Posiciones totales: Barbero, Silla 1, Silla 2, Silla 3\n')
-            print(f'Posiciones ocupadas : {cola.items} \n')
+            print(f'Posiciones ocupadas : {cola.get} \n')
 
         else: 
             cola.first().set_tiempo_esperando(cola.first().tiempoEsperando + 1) #Aumentamos el tiempo del cliente para llegar al tiempo espera
