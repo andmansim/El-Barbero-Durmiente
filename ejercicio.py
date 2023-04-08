@@ -54,7 +54,13 @@ class Cola:
     
     def vacia(self):
         return self.items == []
-
+    
+    def first(self):
+        try:
+             a= self.items[0]
+        except:
+            raise ValueError('No hay primer elemento')
+        return a
 #Main
 
 barbero = Barbero()
@@ -96,5 +102,12 @@ while usuario == 'Si':
     print(f'Posiciones ocupadas : {cola} \n')
     
     if not cola.vacia():
-        
-        
+        if cola.first().tiempo_espera == cola.first().tiempoEsperando:
+            cola.desencolar()
+            print('Salió un  cliente\n')
+            if not cola.vacia():
+                cola.first().set_estado('Barbero')
+                barbero.setter(True)
+            else:
+                barbero.setter(False)
+            k = 0
