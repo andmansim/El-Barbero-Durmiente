@@ -6,6 +6,7 @@ estos esperan en las sillas. 3 sillas ocupadas y barbero también entonces clien
 '''
 
 import random 
+import time
 
 class Barbero:
     #estados del barbero: trabajando, dormido
@@ -36,3 +37,18 @@ class Cliente:
         self.estado = nuevo
     def set_posicion(self, nuevo):
         self.lugar = nuevo
+    
+class Cola:
+    def __init__(self):
+        #cola vacia
+        self.items= []
+    
+    def encolar(self, x):
+        self.items.append(x)
+    
+    def desencolar(self):
+        try:
+            return self.items.pop(0)
+        except:
+            raise ValueError('La cola esta vacia')
+    
