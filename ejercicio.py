@@ -68,33 +68,25 @@ barbero = Barbero()
 cola = Cola()
 num = 0
 i = 0
-usuario = input('Quieres empezar?\tSi/No')
+usuario = input('Quieres empezar?  Si/No\t')
 while usuario == 'Si':
     
     if i % 10 == 0:
-        usuario =  input('Llegó un nuevo cliente\nQuiéres continuar?  Si/No')
+        usuario =  input('Llegó un nuevo cliente\nQuiéres continuar?  Si/No\t')
         num +=1
         if cola.vacia(): #añadimos un cliente
-            cliente = Cliente(num)
-            cliente.set_estado('Barbero')
+            cliente = Cliente(num, 'Barbero')
             cola.encolar(cliente)
             barbero.setter(True)
-            '''time.sleep(cliente.tiempo_espera)
-            c = cola.desencolar()
-            print(f'Se va el cliente {c.id}')
-            v = cola.vacia()
-            print(v)'''
+    
         elif cola.count() == 1:
-            cliente = Cliente(num)
-            cliente.set_estado('Silla 1')
+            cliente = Cliente(num, 'Silla 1')
             cola.encolar(cliente)
         elif cola.count() == 2:
-            cliente = Cliente(num)
-            cliente.set_estado('Silla 2')
+            cliente = Cliente(num, 'Silla 2')
             cola.encolar(cliente)
         elif cola.count() == 3:
-            cliente = Cliente(num)
-            cliente.set_estado('Silla 3')
+            cliente = Cliente(num, 'Silla 3')
             cola.encolar(cliente)
         else:
             print('El cliente se fue porque no había hueco disponible\n')
