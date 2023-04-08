@@ -59,14 +59,23 @@ class Cola:
 
 barbero = Barbero()
 cola = Cola()
-num = 1
-cliente = Cliente(num)
-if cola.vacia(): #añadimos un cliente
-    cliente.set_estado('Barbero')
-    cliente.set_posicion(0)
-    cola.encolar(cliente)
-    time.sleep(cliente.tiempo_espera)
-    c = cola.desencolar()
-    print(f'Se va el cliente {c.id}')
-    v = cola.vacia()
-    print(v)
+num = 0
+i = 0
+usuario = input('Quieres empezar?\tSi/No')
+while usuario == 'Si':
+    
+    if i % 10 == 0:
+        usuario =  input('Llegó un nuevo cliente\nQuiéres continuar?  Si/No')
+        num +=1
+        if cola.vacia(): #añadimos un cliente
+            cliente = Cliente(num)
+            cliente.set_estado('Barbero')
+            cliente.set_posicion(0)
+            cola.encolar(cliente)
+            time.sleep(cliente.tiempo_espera)
+            c = cola.desencolar()
+            print(f'Se va el cliente {c.id}')
+            v = cola.vacia()
+            print(v)
+        elif cola.count() == 1:
+            
