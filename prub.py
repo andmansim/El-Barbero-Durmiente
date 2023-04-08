@@ -36,13 +36,29 @@ class Cliente(threading.Thread):
 def empezar(hilo):
     hilo.start()
 
-b1 = Barbero()
-b2 = Barbero()
-b3 = Barbero()
-cont = 0
+lista= []
 
-c1 = Cliente(1, 'esperando')
-c2 = Cliente(2, 'esperando')
-c3 = Cliente(3, 'esperando')
+for i in range(2):
+    lista.append(Barbero())
+for a in lista:
+    empezar(a)
+
+cont = 2
+client = []
+num = 1
+for c in range(cont):
+    client.append(Cliente(num, 'esperando'))
+    num +=1
+
+for r in client:
+    for h in lista:
+        if h.get() == False:
+            r.start()
+            r.set_estado('atendido')
+
+for u in client:
+    print(u.get())
+
+
 
 
