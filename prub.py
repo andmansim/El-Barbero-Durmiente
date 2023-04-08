@@ -5,6 +5,7 @@ import threading
 class Barbero(threading.Thread):
     #estados del barbero: trabajando, dormido
     def __init__(self):
+        super().__init__()
         self.estado = False #No tiene estado hasta q llega un cliente
     
     def get(self): #getter
@@ -18,6 +19,7 @@ class Cliente(threading.Thread):
     #posición si está en la barbería: silla 1, silla 2, silla 3 o barbero
     #si está siendo atendido, tiene que tener un tiempo (para que le corte el pelo o lo que sea)
     def __init__(self, id, estado):
+        super().__init__()
         self.id = id
         self.estado = estado #no tiene estado
         self.tiempo_espera = random.randint(5, 25)
