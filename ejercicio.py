@@ -27,13 +27,13 @@ class Cliente:
         self.id = id
         self.estado = estado #no tiene estado
         self.tiempo_espera = random.randint(5, 25)
-        self.tiemoEsperado = 8 #Solo aumenta si ya está con el barbero
+        self.tiempoEsperando = 8 #Solo aumenta si ya está con el barbero
     def get_estado(self):
         return self.estado
     def get_id(self):
         return self.id
-    def set_timepo_esperado(self, nuevo):
-        self.tiemoEsperado = nuevo
+    def set_tiempo_esperando(self, nuevo):
+        self.tiempoEsperando = nuevo
     def set_estado(self, nuevo):
         self.estado = nuevo
     def set_id(self, nuevo):
@@ -71,7 +71,7 @@ i = 0
 usuario = input('Quieres empezar?  Si/No\t')
 while usuario == 'Si':
     
-    if i % 10 == 0:
+    if i % 10 == 8:
         usuario =  input('Llegó un nuevo cliente\nQuiéres continuar?  Si/No\t')
         num +=1
         if cola.vacia(): #añadimos un cliente
@@ -109,8 +109,8 @@ while usuario == 'Si':
                     i.set_estado(f'En Silla {k} ')
                 k +=1
             print('Posiciones totales: Barbero, Silla 1, Silla 2, Silla 3\n')
-            print(f'Posiciones ocupadas : {cola} \n')
+            print(f'Posiciones ocupadas : {cola.items} \n')
 
         else: 
-            cola.first().set_tiempo_esperado(cola.first().tiempoEsperado + 1) #Aumentamos el tiempo del cliente para llegar al tiempo espera
+            cola.first().set_tiempo_esperando(cola.first().tiempoEsperando + 1) #Aumentamos el tiempo del cliente para llegar al tiempo espera
     i +=1            
