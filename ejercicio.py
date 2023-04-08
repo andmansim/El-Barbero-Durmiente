@@ -60,9 +60,13 @@ class Cola:
 barbero = Barbero()
 cola = Cola()
 num = 1
-cliente = Cliente(1)
+cliente = Cliente(num)
 if cola.vacia: #añadimos un cliente
     cliente.set_estado('Barbero')
     cliente.set_posicion(0)
     cola.encolar(cliente)
-    
+    time.sleep(cliente.tiempo_espera)
+    c = cola.desencolar(cliente)
+    print(f'Se va el cliente {c.id}')
+    v = cola.vacia
+    print(v)
