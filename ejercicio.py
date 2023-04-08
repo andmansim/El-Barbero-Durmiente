@@ -5,4 +5,13 @@ estos esperan en las sillas. 3 sillas ocupadas y barbero también entonces clien
 
 '''
 class Barbero:
-    #estados del barbero
+    #estados del barbero: trabajando, dormido
+    def __init__(self):
+        self.estado = None #No tiene estado hasta q llega un cliente
+    
+    def get(self): #getter
+        return self.estado
+    
+    def setter(self, nuevo):
+        self.estado = nuevo #cambiamos el estado del barbero
+        
