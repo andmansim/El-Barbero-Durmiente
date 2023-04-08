@@ -61,12 +61,12 @@ barbero = Barbero()
 cola = Cola()
 num = 1
 cliente = Cliente(num)
-if cola.vacia: #añadimos un cliente
+if cola.vacia(): #añadimos un cliente
     cliente.set_estado('Barbero')
     cliente.set_posicion(0)
     cola.encolar(cliente)
     time.sleep(cliente.tiempo_espera)
-    c = cola.desencolar(cliente)
+    c = cola.desencolar()
     print(f'Se va el cliente {c.id}')
-    v = cola.vacia
+    v = cola.vacia()
     print(v)
