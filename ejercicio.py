@@ -32,7 +32,8 @@ class Cliente:
         return self.estado
     def get_id(self):
         return self.id
-    
+    def set_timepo_esperado(self, nuevo):
+        self.tiemoEsperado = nuevo
     def set_estado(self, nuevo):
         self.estado = nuevo
     def set_id(self, nuevo):
@@ -97,7 +98,7 @@ while usuario == 'Si':
             cola.encolar(cliente)
         else:
             print('El cliente se fue porque no había hueco disponible\n')
-            num -= 1
+            num -= 1 #Se nos fue un cliente
     print('Posiciones totales: Barbero, Silla 1, Silla 2, Silla 3\n')
     print(f'Posiciones ocupadas : {cola} \n')
     
@@ -110,4 +111,14 @@ while usuario == 'Si':
                 barbero.setter(True)
             else:
                 barbero.setter(False)
-            k = 0
+            k = 0 #contador de sillas
+            for i in cola.items:
+                if not k ==0:
+                    i.set_estado(f'En Silla {k} ')
+                k +=1
+            print('Posiciones totales: Barbero, Silla 1, Silla 2, Silla 3\n')
+            print(f'Posiciones ocupadas : {cola} \n')
+
+        else: 
+            cola.first().set_tiempo_esperado(cola.first().tiempoEsperado + 1) #Aumentamos el tiempo del cliente para llegar al tiempo espera
+    i +=1            
