@@ -48,8 +48,9 @@ class Cola:
         self.items.append(x)
     def get(self):
         lista = []
-        for i in self:
-            a = [i.get_id, i.get_estado]
+        for d in self.items:
+        
+            a = [d.get_id(), d.get_estado()]
             lista.append(a)
         return lista
     def desencolar(self):
@@ -57,7 +58,8 @@ class Cola:
             return self.items.pop(0)
         except:
             raise ValueError('La cola esta vacia')
-    
+    def longitud ( self):
+        return len(self.items)
     def vacia(self):
         return self.items == []
     
@@ -73,32 +75,33 @@ barbero = Barbero()
 cola = Cola()
 num = 0
 i = 0
-usuario = input('Quieres empezar?  Si/No\t')
+usuario = input('Quieres empezar?  Si/No\n')
 while usuario == 'Si':
     
     if i % 10 == 0:
-        usuario =  input('Llegó un nuevo cliente\nQuiéres continuar?  Si/No\t')
+        usuario =  input('Llegó un nuevo cliente\nQuiéres continuar? Si/No\n')
         num +=1
         if cola.vacia(): #añadimos un cliente
             cliente = Cliente(num, 'Barbero')
             cola.encolar(cliente)
             barbero.setter(True)
     
-        elif cola.count() == 1:
+        elif cola.longitud() == 1:
             cliente = Cliente(num, 'Silla 1')
             cola.encolar(cliente)
-        elif cola.count() == 2:
+        elif cola.longitud() == 2:
             cliente = Cliente(num, 'Silla 2')
             cola.encolar(cliente)
-        elif cola.count() == 3:
+        elif cola.longitud() == 3:
             cliente = Cliente(num, 'Silla 3')
             cola.encolar(cliente)
         else:
             print('El cliente se fue porque no había hueco disponible\n')
             num -= 1 #Se nos fue un cliente
-    print('Posiciones totales: Barbero, Silla 1, Silla 2, Silla 3\n')
-    print(f'Posiciones ocupadas : {cola} \n')
-    
+        print('Posiciones totales: Barbero, Silla 1, Silla 2, Silla 3\n')
+        c = cola.get()
+        print(f'Posiciones ocupadas : {c} \n')
+        
     if not cola.vacia():
         if cola.first().tiempo_espera == cola.first().tiempoEsperando:
             cola.desencolar()
@@ -109,13 +112,14 @@ while usuario == 'Si':
             else:
                 barbero.setter(False)
             k = 0 #contador de sillas
-            for i in cola.items:
+            for r in cola.items:
                 if not k ==0:
-                    i.set_estado(f'En Silla {k} ')
+                    r.set_estado(f'En Silla {k} ')
                 k +=1
             print('Posiciones totales: Barbero, Silla 1, Silla 2, Silla 3\n')
-            print(f'Posiciones ocupadas : {cola.get} \n')
+            c = cola.get()
+            print(f'Posiciones ocupadas : {c} \n')
 
         else: 
             cola.first().set_tiempo_esperando(cola.first().tiempoEsperando + 1) #Aumentamos el tiempo del cliente para llegar al tiempo espera
-    i +=1            
+    i +=2            
