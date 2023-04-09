@@ -3,14 +3,15 @@ import time
 import threading
 
 
-sillas = 4
-clientes = 8
-SILLASOCPADAS= 0
+sillas = 2
+clientes = 4
+sillas_ocupadas = 0
 barbero_durmiendo = threading.Semaphore(0)
 cliente_esperando = threading.Semaphore(0)
 cliente_atendido = threading.Semaphore(0)
 
 class Barbero(threading.Thread):
+    
     #estados del barbero: trabajando, dormido
     def __init__(self):
         super().__init__()
@@ -23,20 +24,29 @@ class Barbero(threading.Thread):
         self.estado = nuevo #cambiamos el estado del barbero
     
     def run(self):
+        global sillas_ocupadas
         while True:
+            if barbero.estado:
+                '''
+                primero pasa el hilo del barbero, pero al no haber ningún cliente tenemos q bloquearlo.
+                Como cliente_esperando es cero, va a bloquear al hilo del barbero hasta q suban el del cliente
+                '''
+                cliente_esperando.acquire()
             barbero_durmiendo.release() #subimos al barbero
             cliente_esperando.acquire() #bajamos 1 cliente
             print(f'Barbero peina al cliente\n')
             time.sleep(3)
             cliente_atendido.release()
-            SILLASOCPADAS -= 1 #se va el cliente
-            print(f'Sillas ocupadas {SILLASOCPADAS}\n')
+            sillas_ocupadas -= 1 #se va el cliente
+            print(f'Sillas ocupadas {sillas_ocupadas}\n')
                 
 
 class Cliente(threading.Thread):
     #estados del cliente: esperando en una silla, atendido o se va(no hay sitio para él)
     #posición si está en la barbería: silla 1, silla 2, silla 3 o barbero
     #si está siendo atendido, tiene que tener un tiempo (para que le corte el pelo o lo que sea)
+    
+    
     time.sleep(random.randint(5,15))
     def __init__(self, id):
         super().__init__()
@@ -48,18 +58,19 @@ class Cliente(threading.Thread):
         self.id = nuevo
     
     def run (self):
-        if SILLASOCPADAS == sillas:
+        global sillas_ocupadas
+        if sillas_ocupadas == sillas:
             print('El cliente se fue al no haber sillas\n')
         else:
             if barbero.estado:
                cliente_esperando.release()#un cliente tiene al barbero
-               SILLASOCPADAS += 1
-               print(f'El cliente {self.id} está con el barbero\n')
+               sillas_ocupadas += 1
+               print(f'El cliente {self.id} está con el barbero', f'Sillas ocupadas {sillas_ocupadas}\n')
                barbero.setter(False) #despierto
                barbero_durmiendo.acquire()#bloquear barbero
             else:
-                SILLASOCPADAS += 1 #Un cliente más
-                print(f'El cliente {self.id} se sienta en la silla {SILLASOCPADAS}\n')
+                sillas_ocupadas += 1 #Un cliente más
+                print(f'El cliente {self.id} se sienta en la silla {sillas_ocupadas}\n')
                 barbero_durmiendo.acquire() #Bajamos al barbero para bloquearle
                 
     
