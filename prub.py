@@ -90,8 +90,6 @@ class Cliente(threading.Thread):
             
 
 #Main
-
-
 lista= []
 barbero = Barbero()
 lista.append(barbero)
