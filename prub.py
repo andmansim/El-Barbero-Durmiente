@@ -2,10 +2,15 @@ import random
 import time
 import threading
 
-class Barbero(threading.Thread):
+sillas = 4
+clientes = 8
+barbero_durmiendo = threading.Semaphore(0)
+cliente_esperando = threading.Semaphore(0)
+
+
+class Barbero:
     #estados del barbero: trabajando, dormido
     def __init__(self):
-        super().__init__()
         self.estado = False #No tiene estado hasta q llega un cliente
     
     def get(self): #getter
@@ -14,12 +19,11 @@ class Barbero(threading.Thread):
     def setter(self, nuevo):
         self.estado = nuevo #cambiamos el estado del barbero
 
-class Cliente(threading.Thread):
+class Cliente:
     #estados del cliente: esperando en una silla, atendido o se va(no hay sitio para él)
     #posición si está en la barbería: silla 1, silla 2, silla 3 o barbero
     #si está siendo atendido, tiene que tener un tiempo (para que le corte el pelo o lo que sea)
     def __init__(self, id, estado):
-        super().__init__()
         self.id = id
         self.estado = estado #no tiene estado
         self.tiempo_espera = random.randint(5, 25)
@@ -34,33 +38,90 @@ class Cliente(threading.Thread):
         self.estado = nuevo
     def set_id(self, nuevo):
         self.id = nuevo
+    
+class Cola:
+    def __init__(self):
+        #cola vacia
+        self.items= []
+    
+    def encolar(self, x):
+        self.items.append(x)
+    def get(self):
+        lista = []
+        for d in self.items:
+        
+            a = [d.get_id(), d.get_estado()]
+            lista.append(a)
+        return lista
+    def desencolar(self):
+        try:
+            return self.items.pop(0)
+        except:
+            raise ValueError('La cola esta vacia')
+    def longitud ( self):
+        return len(self.items)
+    def vacia(self):
+        return self.items == []
+    
+    def first(self):
+        try:
+             a= self.items[0]
+        except:
+            raise ValueError('No hay primer elemento')
+        return a
+#Main
 
-def empezar(hilo):
-    hilo.start()
+barbero = Barbero()
+cola = Cola()
+num = 0
+i = 0
+usuario = input('Quieres empezar?  Si/No\n')
+while usuario == 'Si':
+    
+    if i % 10 == 0:
+        usuario =  input('Llegó un nuevo cliente\nQuiéres continuar? Si/No\n')
+        num +=1
+        if cola.vacia(): #añadimos un cliente
+            cliente = Cliente(num, 'Barbero')
+            cola.encolar(cliente)
+            barbero.setter(True)
+    
+        elif cola.longitud() == 1:
+            cliente = Cliente(num, 'Silla 1')
+            cola.encolar(cliente)
+        elif cola.longitud() == 2:
+            cliente = Cliente(num, 'Silla 2')
+            cola.encolar(cliente)
+        elif cola.longitud() == 3:
+            cliente = Cliente(num, 'Silla 3')
+            cola.encolar(cliente)
+        else:
+            print('El cliente se fue porque no había hueco disponible\n')
+            num -= 1 #Se nos fue un cliente
+        print('Posiciones totales: Barbero, Silla 1, Silla 2, Silla 3\n')
+        c = cola.get()
+        print(f'Posiciones ocupadas : {c} \n')
+        
+    if not cola.vacia():
+        if cola.first().tiempo_espera == cola.first().tiempoEsperando:
+            cola.desencolar()
+            print('Salió un  cliente\n')
+            if not cola.vacia():
+                cola.first().set_estado('Barbero')
+                barbero.setter(True)
+            else:
+                barbero.setter(False)
+            k = 0 #contador de sillas
+            for r in cola.items:
+                if not k ==0:
+                    r.set_estado(f'En Silla {k} ')
+                k +=1
+            print('Posiciones totales: Barbero, Silla 1, Silla 2, Silla 3\n')
+            c = cola.get()
+            print(f'Posiciones ocupadas : {c} \n')
 
-lista= []
-
-for i in range(2):
-    lista.append(Barbero())
-for a in lista:
-    empezar(a)
-
-cont = 2
-client = []
-num = 1
-for c in range(cont):
-    client.append(Cliente(num, 'esperando'))
-    num +=1
-
-for r in client:
-    for h in lista:
-        if h.get() == False:
-            r.start()
-            r.set_estado('atendido')
-
-for u in client:
-    print(u.get())
-
-
+        else: 
+            cola.first().set_tiempo_esperando(cola.first().tiempoEsperando + 1) #Aumentamos el tiempo del cliente para llegar al tiempo espera
+    i +=2            
 
 
