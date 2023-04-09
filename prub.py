@@ -3,6 +3,12 @@ import time
 import threading
 
 
+sillas = 4
+clientes = 8
+SILLASOCPADAS= 0
+barbero_durmiendo = threading.Semaphore(0)
+cliente_esperando = threading.Semaphore(0)
+cliente_atendido = threading.Semaphore(0)
 
 class Barbero(threading.Thread):
     #estados del barbero: trabajando, dormido
@@ -20,9 +26,11 @@ class Barbero(threading.Thread):
         while True:
             barbero_durmiendo.release() #subimos al barbero
             cliente_esperando.acquire() #bajamos 1 cliente
-            print(f'barbero peina al cliente\n')
+            print(f'Barbero peina al cliente\n')
             time.sleep(3)
             cliente_atendido.release()
+            SILLASOCPADAS -= 1 #se va el cliente
+            print(f'Sillas ocupadas {SILLASOCPADAS}\n')
                 
 
 class Cliente(threading.Thread):
@@ -40,30 +48,24 @@ class Cliente(threading.Thread):
         self.id = nuevo
     
     def run (self):
-        if sillas_ocupadas == sillas:
-            print('El cliente se fue al no haber sillas')
+        if SILLASOCPADAS == sillas:
+            print('El cliente se fue al no haber sillas\n')
         else:
             if barbero.estado:
                cliente_esperando.release()#un cliente tiene al barbero
-               sillas_ocupadas += 1
+               SILLASOCPADAS += 1
                print(f'El cliente {self.id} está con el barbero\n')
                barbero.setter(False) #despierto
                barbero_durmiendo.acquire()#bloquear barbero
             else:
-                sillas_ocupadas += 1 #Un cliente más
-                print(f'El cliente {self.id} se sienta en la silla {sillas_ocupadas}\n')
+                SILLASOCPADAS += 1 #Un cliente más
+                print(f'El cliente {self.id} se sienta en la silla {SILLASOCPADAS}\n')
                 barbero_durmiendo.acquire() #Bajamos al barbero para bloquearle
                 
     
 
 #Main
 
-sillas = 4
-clientes = 8
-sillas_ocupadas = 0
-barbero_durmiendo = threading.Semaphore(0)
-cliente_esperando = threading.Semaphore(0)
-cliente_atendido = threading.Semaphore(0)
 
 lista= []
 barbero = Barbero()
