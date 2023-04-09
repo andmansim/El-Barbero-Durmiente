@@ -33,11 +33,12 @@ class Barbero(threading.Thread):
                 Como cliente_entra es cero, va a bloquear al hilo del barbero hasta q suban el del cliente
                 '''
                 cliente_entra.acquire()
-                
+            
             barbero_durmiendo.release() #subimos al barbero
             cliente_esperando.acquire()
-            print(f'Barbero peina al cliente\n')
-            time.sleep(3)
+
+            print(f'Barbero peina al cliente \n')
+            time.sleep(2)
             cliente_atendido.release()
             
                 
@@ -75,11 +76,12 @@ class Cliente(threading.Thread):
                 barbero_durmiendo.acquire() #Bajamos al barbero para bloquearle
                 
             sillas_ocupadas -= 1 #se va el cliente
-            cliente_esperando.release()    
+            cliente_esperando.release()  
+            print(f'El cliente {self.id} se está peinando\n')  
             cliente_atendido.acquire()
             print(f'El cliente {self.id} termina y se va\n')
             if sillas_ocupadas == 0:
-                barbero_durmiendo = True
+                barbero.setter(True)
             
             
 
@@ -91,7 +93,8 @@ barbero = Barbero()
 lista.append(barbero)
 
 for i in range(clientes):
-    lista.append(Cliente(i))
+    c = Cliente(i)
+    lista.append(c)
 
 for a in lista:
     a.start()
