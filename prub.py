@@ -3,10 +3,11 @@ import time
 import threading
 
 
-sillas = 2
-clientes = 4
+sillas = 4
+clientes = 8
 sillas_ocupadas = 0
 barbero_durmiendo = threading.Semaphore(0)
+cliente_entra = 
 cliente_esperando = threading.Semaphore(0)
 cliente_atendido = threading.Semaphore(0)
 
@@ -32,13 +33,12 @@ class Barbero(threading.Thread):
                 Como cliente_esperando es cero, va a bloquear al hilo del barbero hasta q suban el del cliente
                 '''
                 cliente_esperando.acquire()
+                
             barbero_durmiendo.release() #subimos al barbero
-            cliente_esperando.acquire() #bajamos 1 cliente
+            cliente_atendido.release()
             print(f'Barbero peina al cliente\n')
             time.sleep(3)
-            cliente_atendido.release()
-            sillas_ocupadas -= 1 #se va el cliente
-            print(f'Sillas ocupadas {sillas_ocupadas}\n')
+            
                 
 
 class Cliente(threading.Thread):
@@ -47,7 +47,7 @@ class Cliente(threading.Thread):
     #si está siendo atendido, tiene que tener un tiempo (para que le corte el pelo o lo que sea)
     
     
-    time.sleep(random.randint(5,15))
+    time.sleep(random.randint(4,10))
     def __init__(self, id):
         super().__init__()
         self.id = id
@@ -65,15 +65,19 @@ class Cliente(threading.Thread):
             if barbero.estado:
                cliente_esperando.release()#un cliente tiene al barbero
                sillas_ocupadas += 1
-               print(f'El cliente {self.id} está con el barbero', f'Sillas ocupadas {sillas_ocupadas}\n')
+               print(f'El cliente {self.id} está con el barbero.', f'Silla ocupada {sillas_ocupadas}\n')
                barbero.setter(False) #despierto
                barbero_durmiendo.acquire()#bloquear barbero
             else:
                 sillas_ocupadas += 1 #Un cliente más
                 print(f'El cliente {self.id} se sienta en la silla {sillas_ocupadas}\n')
                 barbero_durmiendo.acquire() #Bajamos al barbero para bloquearle
-                
-    
+            
+            cliente_esperando.release()    
+            cliente_atendido.release()
+            print(f'El cliente {self.id} termina y se va\n')
+            sillas_ocupadas -= 1 #se va el cliente
+            
 
 #Main
 
