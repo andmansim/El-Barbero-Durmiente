@@ -15,6 +15,15 @@ class Barbero(threading.Thread):
     
     def setter(self, nuevo):
         self.estado = nuevo #cambiamos el estado del barbero
+    
+    def run(self):
+        while True:
+            barbero_durmiendo.release() #subimos al barbero
+            cliente_esperando.acquire() #bajamos 1 cliente
+            print(f'barbero peina al cliente\n')
+            time.sleep(3)
+            cliente_atendido.release()
+                
 
 class Cliente(threading.Thread):
     #estados del cliente: esperando en una silla, atendido o se va(no hay sitio para él)
@@ -54,6 +63,7 @@ clientes = 8
 sillas_ocupadas = 0
 barbero_durmiendo = threading.Semaphore(0)
 cliente_esperando = threading.Semaphore(0)
+cliente_atendido = threading.Semaphore(0)
 
 lista= []
 barbero = Barbero()
