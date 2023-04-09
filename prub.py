@@ -49,7 +49,7 @@ class Cliente(threading.Thread):
     #si está siendo atendido, tiene que tener un tiempo (para que le corte el pelo o lo que sea)
     
     
-    time.sleep(random.randint(4,10))
+    time.sleep(random.randint(0,1))
     def __init__(self, id):
         super().__init__()
         self.id = id
