@@ -27,7 +27,7 @@ class Barbero(threading.Thread):
     def run(self):
         global sillas_ocupadas
         while True:
-            if barbero.estado:
+            if barbero.estado == True: #está durmiendo
                 '''
                 primero pasa el hilo del barbero, pero al no haber ningún cliente tenemos q bloquearlo.
                 Como cliente_entra es cero, va a bloquear al hilo del barbero hasta q suban el del cliente
@@ -40,7 +40,7 @@ class Barbero(threading.Thread):
             print(f'Barbero peina al cliente \n')
             time.sleep(random.randint(1,2))
             cliente_atendido.release()
-            
+            print(f'Cliente atendido y se va \n')
                 
 
 class Cliente(threading.Thread):
@@ -64,22 +64,25 @@ class Cliente(threading.Thread):
         if sillas_ocupadas == sillas:
             print('El cliente se fue al no haber sillas\n')
         else:
-            if barbero.estado:
-               cliente_entra.release()#un cliente tiene al barbero
-               print(f'El cliente {self.id} está con el barbero.', f'Silla ocupada {sillas_ocupadas}\n')
-               sillas_ocupadas += 1
-               barbero.setter(False) #despierto
-               barbero_durmiendo.acquire()#bloquear barbero
+            if barbero.estado == True: #barbero durmiendo
+                cliente_entra.release()#un cliente tiene al barbero
+                print(f'El cliente {self.id} está con el barbero.\n')
+                sillas_ocupadas += 1
+                barbero.setter(False) #despierto
+                barbero_durmiendo.acquire()#bloquear barbero
+                
             else:
                 sillas_ocupadas += 1 #Un cliente más
-                print(f'El cliente {self.id} se sienta en la silla {sillas_ocupadas}\n')
+                print(f'El cliente {self.id} se sienta en una silla\n')
                 barbero_durmiendo.acquire() #Bajamos al barbero para bloquearle
                 
+            print(f'El cliente {self.id} se está peinando\n')  
             sillas_ocupadas -= 1 #se va el cliente
             cliente_esperando.release()  
-            print(f'El cliente {self.id} se está peinando\n')  
             cliente_atendido.acquire()
             print(f'El cliente {self.id} termina y se va\n')
+            
+            
             if sillas_ocupadas == 0:
                 print('El barbero se duerme porque no hay clientes\n')
                 barbero.setter(True)
