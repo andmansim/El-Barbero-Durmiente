@@ -96,7 +96,7 @@ lista= []
 barbero = Barbero()
 lista.append(barbero)
 
-for i in range(clientes):
+for i in range(1, clientes):
     c = Cliente(i)
     lista.append(c)
 
