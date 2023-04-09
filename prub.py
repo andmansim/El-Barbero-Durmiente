@@ -36,9 +36,15 @@ class Cliente(threading.Thread):
         else:
             if barbero.estado:
                cliente_esperando.release()#un cliente tiene al barbero
-               print(f'El cliente {self.id} está con el barbero')
+               sillas_ocupadas += 1
+               print(f'El cliente {self.id} está con el barbero\n')
+               barbero.setter(False) #despierto
                barbero_durmiendo.acquire()#bloquear barbero
-               
+            else:
+                sillas_ocupadas += 1 #Un cliente más
+                print(f'El cliente {self.id} se sienta en la silla {sillas_ocupadas}\n')
+                barbero_durmiendo.acquire() #Bajamos al barbero para bloquearle
+                
     
 
 #Main
