@@ -38,7 +38,7 @@ class Barbero(threading.Thread):
             cliente_esperando.acquire()
 
             print(f'Barbero peina al cliente \n')
-            time.sleep(2)
+            time.sleep(random.randint(1,2))
             cliente_atendido.release()
             
                 
@@ -49,7 +49,7 @@ class Cliente(threading.Thread):
     #si está siendo atendido, tiene que tener un tiempo (para que le corte el pelo o lo que sea)
     
     
-    time.sleep(random.randint(0,1))
+    time.sleep(random.uniform(0,10))
     def __init__(self, id):
         super().__init__()
         self.id = id
@@ -66,8 +66,8 @@ class Cliente(threading.Thread):
         else:
             if barbero.estado:
                cliente_entra.release()#un cliente tiene al barbero
-               sillas_ocupadas += 1
                print(f'El cliente {self.id} está con el barbero.', f'Silla ocupada {sillas_ocupadas}\n')
+               sillas_ocupadas += 1
                barbero.setter(False) #despierto
                barbero_durmiendo.acquire()#bloquear barbero
             else:
@@ -81,6 +81,7 @@ class Cliente(threading.Thread):
             cliente_atendido.acquire()
             print(f'El cliente {self.id} termina y se va\n')
             if sillas_ocupadas == 0:
+                print('El barbero se duerme porque no hay clientes\n')
                 barbero.setter(True)
             
             
