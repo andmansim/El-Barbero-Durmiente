@@ -113,3 +113,5 @@ for e in lista:
     e.join()
 
 ```
+
+![Capbarbero](/capBarbero.png)
