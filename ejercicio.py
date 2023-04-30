@@ -103,6 +103,3 @@ for a in lista:
 
 for e in lista:
     e.join()
-
-
-
