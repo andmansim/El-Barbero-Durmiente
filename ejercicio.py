@@ -1,125 +1,108 @@
-'''
-Barbero tiene 3 sillas, atiende a n clientes. No clientes barbero duerme, llega uno este le despierta
-Llega un cliente y el barbero está ocupado, se sienta en la silla 1, si llega otro en la 2 y luego en la 3
-estos esperan en las sillas. 3 sillas ocupadas y barbero también entonces cliente se va 
-
-'''
-
 import random 
 import time
+import threading
 
-class Barbero:
+
+sillas = 4
+clientes = 8
+sillas_ocupadas = 0
+barbero_durmiendo = threading.Semaphore(0)
+cliente_entra = threading.Semaphore(0)
+cliente_esperando = threading.Semaphore(0)
+cliente_atendido = threading.Semaphore(0)
+
+class Barbero(threading.Thread):
+    
     #estados del barbero: trabajando, dormido
     def __init__(self):
-        self.estado = False #No tiene estado hasta q llega un cliente
+        super().__init__()
+        self.estado = True #True dormir
     
     def get(self): #getter
         return self.estado
     
     def setter(self, nuevo):
         self.estado = nuevo #cambiamos el estado del barbero
+    
+    def run(self):
+        global sillas_ocupadas
+        while True:
+            if barbero.estado == True: #está durmiendo
+                '''
+                primero pasa el hilo del barbero, pero al no haber ningún cliente tenemos q bloquearlo.
+                Como cliente_entra es cero, va a bloquear al hilo del barbero hasta q suban el del cliente
+                '''
+                cliente_entra.acquire()
+            
+            barbero_durmiendo.release() #subimos al barbero
+            cliente_esperando.acquire()
 
-class Cliente:
+            print(f'Barbero peina al cliente \n')
+            time.sleep(random.randint(1,2))
+            cliente_atendido.release()
+            print(f'Cliente atendido y se va \n')
+                
+
+class Cliente(threading.Thread):
     #estados del cliente: esperando en una silla, atendido o se va(no hay sitio para él)
     #posición si está en la barbería: silla 1, silla 2, silla 3 o barbero
     #si está siendo atendido, tiene que tener un tiempo (para que le corte el pelo o lo que sea)
-    def __init__(self, id, estado):
+    
+    
+    time.sleep(random.uniform(0,10))
+    def __init__(self, id):
+        super().__init__()
         self.id = id
-        self.estado = estado #no tiene estado
-        self.tiempo_espera = random.randint(5, 25)
-        self.tiempoEsperando = 8 #Solo aumenta si ya está con el barbero
-    def get_estado(self):
-        return self.estado
+        
     def get_id(self):
         return self.id
-    def set_tiempo_esperando(self, nuevo):
-        self.tiempoEsperando = nuevo
-    def set_estado(self, nuevo):
-        self.estado = nuevo
     def set_id(self, nuevo):
         self.id = nuevo
     
-class Cola:
-    def __init__(self):
-        #cola vacia
-        self.items= []
-    
-    def encolar(self, x):
-        self.items.append(x)
-    def get(self):
-        lista = []
-        for d in self.items:
-        
-            a = [d.get_id(), d.get_estado()]
-            lista.append(a)
-        return lista
-    def desencolar(self):
-        try:
-            return self.items.pop(0)
-        except:
-            raise ValueError('La cola esta vacia')
-    def longitud ( self):
-        return len(self.items)
-    def vacia(self):
-        return self.items == []
-    
-    def first(self):
-        try:
-             a= self.items[0]
-        except:
-            raise ValueError('No hay primer elemento')
-        return a
-#Main
-
-barbero = Barbero()
-cola = Cola()
-num = 0
-i = 0
-usuario = input('Quieres empezar?  Si/No\n')
-while usuario == 'Si':
-    
-    if i % 10 == 0:
-        usuario =  input('Llegó un nuevo cliente\nQuiéres continuar? Si/No\n')
-        num +=1
-        if cola.vacia(): #añadimos un cliente
-            cliente = Cliente(num, 'Barbero')
-            cola.encolar(cliente)
-            barbero.setter(True)
-    
-        elif cola.longitud() == 1:
-            cliente = Cliente(num, 'Silla 1')
-            cola.encolar(cliente)
-        elif cola.longitud() == 2:
-            cliente = Cliente(num, 'Silla 2')
-            cola.encolar(cliente)
-        elif cola.longitud() == 3:
-            cliente = Cliente(num, 'Silla 3')
-            cola.encolar(cliente)
+    def run (self):
+        global sillas_ocupadas
+        if sillas_ocupadas == sillas:
+            print('El cliente se fue al no haber sillas\n')
         else:
-            print('El cliente se fue porque no había hueco disponible\n')
-            num -= 1 #Se nos fue un cliente
-        print('Posiciones totales: Barbero, Silla 1, Silla 2, Silla 3\n')
-        c = cola.get()
-        print(f'Posiciones ocupadas : {c} \n')
-        
-    if not cola.vacia():
-        if cola.first().tiempo_espera == cola.first().tiempoEsperando:
-            cola.desencolar()
-            print('Salió un  cliente\n')
-            if not cola.vacia():
-                cola.first().set_estado('Barbero')
-                barbero.setter(True)
+            if barbero.estado == True: #barbero durmiendo
+                cliente_entra.release()#un cliente tiene al barbero
+                print(f'El cliente {self.id} está con el barbero.\n')
+                sillas_ocupadas += 1
+                barbero.setter(False) #despierto
+                barbero_durmiendo.acquire()#bloquear barbero
+                
             else:
-                barbero.setter(False)
-            k = 0 #contador de sillas
-            for r in cola.items:
-                if not k ==0:
-                    r.set_estado(f'En Silla {k} ')
-                k +=1
-            print('Posiciones totales: Barbero, Silla 1, Silla 2, Silla 3\n')
-            c = cola.get()
-            print(f'Posiciones ocupadas : {c} \n')
+                sillas_ocupadas += 1 #Un cliente más
+                print(f'El cliente {self.id} se sienta en una silla\n')
+                barbero_durmiendo.acquire() #Bajamos al barbero para bloquearle
+                
+            print(f'El cliente {self.id} se está peinando\n')  
+            sillas_ocupadas -= 1 #se va el cliente
+            cliente_esperando.release()  
+            cliente_atendido.acquire()
+            print(f'El cliente {self.id} termina y se va\n')
+            
+            
+            if sillas_ocupadas == 0:
+                print('El barbero se duerme porque no hay clientes\n')
+                barbero.setter(True)
+            
+            
 
-        else: 
-            cola.first().set_tiempo_esperando(cola.first().tiempoEsperando + 1) #Aumentamos el tiempo del cliente para llegar al tiempo espera
-    i +=2            
+#Main
+lista= []
+barbero = Barbero()
+lista.append(barbero)
+
+for i in range(1, clientes):
+    c = Cliente(i)
+    lista.append(c)
+
+for a in lista:
+    a.start()
+
+for e in lista:
+    e.join()
+
+
+
