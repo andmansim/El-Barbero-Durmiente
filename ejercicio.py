@@ -29,8 +29,8 @@ class Barbero(threading.Thread):
         while True:
             if barbero.estado == True: #está durmiendo
                 '''
-                primero pasa el hilo del barbero, pero al no haber ningún cliente tenemos q bloquearlo.
-                Como cliente_entra es cero, va a bloquear al hilo del barbero hasta q suban el del cliente
+                primero pasa el hilo del barbero, pero al no haber ningún cliente tenemos q bloquearlo, dado q al barbero le despiertan los clientes.
+                Como cliente_entra es cero, va a bloquear al hilo del barbero hasta q lo suban en la clase cliente.
                 '''
                 cliente_entra.acquire()
             
@@ -92,7 +92,7 @@ class Cliente(threading.Thread):
 #Main
 lista= []
 barbero = Barbero()
-lista.append(barbero)
+lista.append(barbero) #el primero de la lista es el barbero 
 
 for i in range(1, clientes):
     c = Cliente(i)
